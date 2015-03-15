@@ -238,10 +238,8 @@ Data is loaded in the <code>data</code> variable</p>
 str(data)
 </code></pre>
 
-<pre><code>## &#39;data.frame&#39;:    17568 obs. of  3 variables:
-##  $ steps   : int  NA NA NA NA NA NA NA NA NA NA ...
-##  $ date    : Factor w/ 61 levels &quot;2012-10-01&quot;,&quot;2012-10-02&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
-##  $ interval: int  0 5 10 15 20 25 30 35 40 45 ...
+<pre><code>## &#39;data.frame&#39;:    17568 obs. of  1 variable:
+##  $ steps..date...interval.: Factor w/ 17568 levels &quot;0,\&quot;2012-10-02\&quot;,0&quot;,..: 15265 15490 15266 15337 15400 15459 15462 15473 15476 15487 ...
 </code></pre>
 
 <h3>Preprocessig data</h3>
@@ -250,31 +248,17 @@ str(data)
 To easy maniluplate we use <code>dplyr package</code></p>
 
 <pre><code class="r">library(dplyr)
+data&lt;-mutate(data,date=as.POSIXct(date,format=&#39;%Y-%m-%d&#39;))
 </code></pre>
 
-<pre><code>## Warning: package &#39;dplyr&#39; was built under R version 3.1.2
+<pre><code>## Error in as.POSIXct.default(function () : c(&quot;do not know how to convert &#39;function () &#39; to class \&quot;POSIXct\&quot;&quot;, &quot;do not know how to convert &#39;.Internal(date())&#39; to class \&quot;POSIXct\&quot;&quot;)
 </code></pre>
 
-<pre><code>## 
-## Attaching package: &#39;dplyr&#39;
-## 
-## The following object is masked from &#39;package:stats&#39;:
-## 
-##     filter
-## 
-## The following objects are masked from &#39;package:base&#39;:
-## 
-##     intersect, setdiff, setequal, union
+<pre><code class="r">str(data)
 </code></pre>
 
-<pre><code class="r">data&lt;-mutate(data,date=as.POSIXct(date,format=&#39;%Y-%m-%d&#39;))
-str(data)
-</code></pre>
-
-<pre><code>## &#39;data.frame&#39;:    17568 obs. of  3 variables:
-##  $ steps   : int  NA NA NA NA NA NA NA NA NA NA ...
-##  $ date    : POSIXct, format: &quot;2012-10-01&quot; &quot;2012-10-01&quot; ...
-##  $ interval: int  0 5 10 15 20 25 30 35 40 45 ...
+<pre><code>## &#39;data.frame&#39;:    17568 obs. of  1 variable:
+##  $ steps..date...interval.: Factor w/ 17568 levels &quot;0,\&quot;2012-10-02\&quot;,0&quot;,..: 15265 15490 15266 15337 15400 15459 15462 15473 15476 15487 ...
 </code></pre>
 
 <h2>What is mean total number of steps taken per day?</h2>
@@ -286,8 +270,18 @@ str(data)
 <p>Using <code>group_by</code> we prepare the aggregation by <code>date</code>, afterwards we define a new dataset <code>dataxday</code> where <code>total</code> contains the total number of steps taken per day</p>
 
 <pre><code class="r">dataxday&lt;-group_by(data,date)
-dataxday&lt;-summarize(dataxday,total=sum(steps))
-summary(dataxday)
+</code></pre>
+
+<pre><code>## Error in eval(expr, envir, enclos): unknown column &#39;date&#39;
+</code></pre>
+
+<pre><code class="r">dataxday&lt;-summarize(dataxday,total=sum(steps))
+</code></pre>
+
+<pre><code>## Error in summarise_impl(.data, dots): object &#39;steps&#39; not found
+</code></pre>
+
+<pre><code class="r">summary(dataxday)
 </code></pre>
 
 <pre><code>##       date                         total      
@@ -328,14 +322,19 @@ While the total number of steps in the whole dataset is <strong>570608</strong><
 <p>Using <code>group_by</code> we prepare the aggregation by <code>date</code>, afterwards we define a new dataset <code>stepxint</code> where <code>avgstep</code> contains the average number of steps</p>
 
 <pre><code class="r">stepxint&lt;-group_by(data,interval)
-stepxint&lt;-summarize(stepxint,avgstep=mean(steps,na.rm=TRUE))
-library(ggplot2)
 </code></pre>
 
-<pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 3.1.2
+<pre><code>## Error in eval(expr, envir, enclos): unknown column &#39;interval&#39;
 </code></pre>
 
-<pre><code class="r">g1&lt;-qplot(interval,avgstep,data=stepxint,geom=&#39;path&#39;,main=&quot;Average Number of steps per interval&quot;,xlab=&#39;Interval&#39;,ylab=&#39;Number of steps&#39;)
+<pre><code class="r">stepxint&lt;-summarize(stepxint,avgstep=mean(steps,na.rm=TRUE))
+</code></pre>
+
+<pre><code>## Error in mean(steps, na.rm = TRUE): object &#39;steps&#39; not found
+</code></pre>
+
+<pre><code class="r">library(ggplot2)
+g1&lt;-qplot(interval,avgstep,data=stepxint,geom=&#39;path&#39;,main=&quot;Average Number of steps per interval&quot;,xlab=&#39;Interval&#39;,ylab=&#39;Number of steps&#39;)
 g1&lt;-g1+scale_x_discrete(breaks=seq(0, 2400, by=100))
 g1
 </code></pre>
@@ -360,10 +359,18 @@ m&lt;-int%%100
 <pre><code class="r">sum(is.na(data$date))
 </code></pre>
 
+<pre><code>## Warning in is.na(data$date): is.na() applied to non-(list or vector) of
+## type &#39;NULL&#39;
+</code></pre>
+
 <pre><code>## [1] 0
 </code></pre>
 
 <pre><code class="r">sum(is.na(data$interval))
+</code></pre>
+
+<pre><code>## Warning in is.na(data$interval): is.na() applied to non-(list or vector)
+## of type &#39;NULL&#39;
 </code></pre>
 
 <pre><code>## [1] 0
@@ -372,7 +379,7 @@ m&lt;-int%%100
 <pre><code class="r">sum(is.na(data$steps))
 </code></pre>
 
-<pre><code>## [1] 2304
+<pre><code>## [1] 0
 </code></pre>
 
 <pre><code class="r">newdata&lt;-data
@@ -380,7 +387,7 @@ iddna&lt;-which(is.na(newdata$steps))
 n&lt;-length(iddna)
 </code></pre>
 
-<p>It means we have <strong>2304</strong> nrows with missing values in the <code>steps</code> variable. <code>iddna</code> is a vector with the row index in the <code>newdata</code> dataset about missing values.  </p>
+<p>It means we have <strong>0</strong> nrows with missing values in the <code>steps</code> variable. <code>iddna</code> is a vector with the row index in the <code>newdata</code> dataset about missing values.  </p>
 
 <h3>Devise a strategy for filling in all of the missing values in the dataset.</h3>
 
@@ -400,12 +407,24 @@ newdata$steps[idint]&lt;-FUNFIL(newdata$interval[idint])
 }
 </code></pre>
 
+<pre><code>## Error in `[&lt;-.factor`(`*tmp*`, idint, value = numeric(0)): replacement has length zero
+</code></pre>
+
 <h3>Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day.</h3>
 
 <pre><code class="r">ndataxday&lt;-group_by(newdata,date)
-ndataxday&lt;-summarize(ndataxday,total=sum(steps))
+</code></pre>
 
-# Total steps per day
+<pre><code>## Error in eval(expr, envir, enclos): unknown column &#39;date&#39;
+</code></pre>
+
+<pre><code class="r">ndataxday&lt;-summarize(ndataxday,total=sum(steps))
+</code></pre>
+
+<pre><code>## Error in summarise_impl(.data, dots): object &#39;steps&#39; not found
+</code></pre>
+
+<pre><code class="r"># Total steps per day
 # Histogram
 hist(ndataxday$total,xlab=&#39;Total number of steps taken&#39;,main=&#39;Freguency of total number of steps x day&#39;)
 </code></pre>
@@ -431,21 +450,33 @@ While the added total number of steps is <strong>8.6096 &times; 10<sup>4</sup></
 </code></pre>
 
 <pre><code class="r">newdata&lt;-mutate(newdata,wk=factor(weekdays(date) %in% c(&#39;Sunday&#39;,&#39;Saturday&#39;), labels = c(&quot;weekday&quot;, &quot;weekend&quot;)))
-str(newdata)
 </code></pre>
 
-<pre><code>## &#39;data.frame&#39;:    17568 obs. of  4 variables:
-##  $ steps   : num  2 0 0 0 0 2 1 1 0 1 ...
-##  $ date    : POSIXct, format: &quot;2012-10-01&quot; &quot;2012-10-01&quot; ...
-##  $ interval: int  0 5 10 15 20 25 30 35 40 45 ...
-##  $ wk      : Factor w/ 2 levels &quot;weekday&quot;,&quot;weekend&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+<pre><code>## Error in UseMethod(&quot;weekdays&quot;): no applicable method for &#39;weekdays&#39; applied to an object of class &quot;function&quot;
+</code></pre>
+
+<pre><code class="r">str(newdata)
+</code></pre>
+
+<pre><code>## &#39;data.frame&#39;:    17568 obs. of  1 variable:
+##  $ steps..date...interval.: Factor w/ 17568 levels &quot;0,\&quot;2012-10-02\&quot;,0&quot;,..: 15265 15490 15266 15337 15400 15459 15462 15473 15476 15487 ...
 </code></pre>
 
 <h3>Make a panel plot containing a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).</h3>
 
 <pre><code class="r">stepxwint&lt;-group_by(newdata,wk,interval)
-stepxwint&lt;-summarize(stepxwint,avgstep=mean(steps))
-g1&lt;-qplot(interval,avgstep,data=stepxwint,geom=&#39;path&#39;,facets=wk~.,main=&quot;Average Number of steps per interval&quot;,xlab=&#39;Interval&#39;,ylab=&#39;Number of steps&#39;)
+</code></pre>
+
+<pre><code>## Error in eval(expr, envir, enclos): unknown column &#39;wk&#39;
+</code></pre>
+
+<pre><code class="r">stepxwint&lt;-summarize(stepxwint,avgstep=mean(steps))
+</code></pre>
+
+<pre><code>## Error in mean(steps): object &#39;steps&#39; not found
+</code></pre>
+
+<pre><code class="r">g1&lt;-qplot(interval,avgstep,data=stepxwint,geom=&#39;path&#39;,facets=wk~.,main=&quot;Average Number of steps per interval&quot;,xlab=&#39;Interval&#39;,ylab=&#39;Number of steps&#39;)
 g1&lt;-g1+scale_x_discrete(breaks=seq(0, 2400, by=100))
 g1
 </code></pre>
