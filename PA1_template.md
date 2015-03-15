@@ -1,7 +1,7 @@
 ---
 title: "Reproducible Research: Peer Assessment 1"
 author: "Walter Trabucco"
-date: "Suturday, February 14, 2015"
+date: "Sunday, March 15, 2015"
 output: html_document
 keep_md: true
 ---
@@ -51,6 +51,26 @@ To easy maniluplate we use `dplyr package`
 
 ```r
 library(dplyr)
+```
+
+```
+## Warning: package 'dplyr' was built under R version 3.1.2
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+## 
+## The following object is masked from 'package:stats':
+## 
+##     filter
+## 
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+```r
 data<-mutate(data,date=as.POSIXct(date,format='%Y-%m-%d'))
 str(data)
 ```
@@ -115,6 +135,13 @@ Using `group_by` we prepare the aggregation by `date`, afterwards we define a ne
 stepxint<-group_by(data,interval)
 stepxint<-summarize(stepxint,avgstep=mean(steps,na.rm=TRUE))
 library(ggplot2)
+```
+
+```
+## Warning: package 'ggplot2' was built under R version 3.1.2
+```
+
+```r
 g1<-qplot(interval,avgstep,data=stepxint,geom='path',main="Average Number of steps per interval",xlab='Interval',ylab='Number of steps')
 g1<-g1+scale_x_discrete(breaks=seq(0, 2400, by=100))
 g1

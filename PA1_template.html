@@ -250,7 +250,24 @@ str(data)
 To easy maniluplate we use <code>dplyr package</code></p>
 
 <pre><code class="r">library(dplyr)
-data&lt;-mutate(data,date=as.POSIXct(date,format=&#39;%Y-%m-%d&#39;))
+</code></pre>
+
+<pre><code>## Warning: package &#39;dplyr&#39; was built under R version 3.1.2
+</code></pre>
+
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;
+## 
+## The following object is masked from &#39;package:stats&#39;:
+## 
+##     filter
+## 
+## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union
+</code></pre>
+
+<pre><code class="r">data&lt;-mutate(data,date=as.POSIXct(date,format=&#39;%Y-%m-%d&#39;))
 str(data)
 </code></pre>
 
@@ -313,7 +330,12 @@ While the total number of steps in the whole dataset is <strong>570608</strong><
 <pre><code class="r">stepxint&lt;-group_by(data,interval)
 stepxint&lt;-summarize(stepxint,avgstep=mean(steps,na.rm=TRUE))
 library(ggplot2)
-g1&lt;-qplot(interval,avgstep,data=stepxint,geom=&#39;path&#39;,main=&quot;Average Number of steps per interval&quot;,xlab=&#39;Interval&#39;,ylab=&#39;Number of steps&#39;)
+</code></pre>
+
+<pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 3.1.2
+</code></pre>
+
+<pre><code class="r">g1&lt;-qplot(interval,avgstep,data=stepxint,geom=&#39;path&#39;,main=&quot;Average Number of steps per interval&quot;,xlab=&#39;Interval&#39;,ylab=&#39;Number of steps&#39;)
 g1&lt;-g1+scale_x_discrete(breaks=seq(0, 2400, by=100))
 g1
 </code></pre>
