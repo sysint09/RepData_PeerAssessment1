@@ -39,8 +39,10 @@ str(data)
 ```
 
 ```
-## 'data.frame':	17568 obs. of  1 variable:
-##  $ steps..date...interval.: Factor w/ 17568 levels "0,\"2012-10-02\",0",..: 15265 15490 15266 15337 15400 15459 15462 15473 15476 15487 ...
+## 'data.frame':	17568 obs. of  3 variables:
+##  $ steps   : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ date    : Factor w/ 61 levels "2012-10-01","2012-10-02",..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ interval: int  0 5 10 15 20 25 30 35 40 45 ...
 ```
 
 ### Preprocessig data
@@ -50,19 +52,14 @@ To easy maniluplate we use `dplyr package`
 ```r
 library(dplyr)
 data<-mutate(data,date=as.POSIXct(date,format='%Y-%m-%d'))
-```
-
-```
-## Error in as.POSIXct.default(function () : c("do not know how to convert 'function () ' to class \"POSIXct\"", "do not know how to convert '.Internal(date())' to class \"POSIXct\"")
-```
-
-```r
 str(data)
 ```
 
 ```
-## 'data.frame':	17568 obs. of  1 variable:
-##  $ steps..date...interval.: Factor w/ 17568 levels "0,\"2012-10-02\",0",..: 15265 15490 15266 15337 15400 15459 15462 15473 15476 15487 ...
+## 'data.frame':	17568 obs. of  3 variables:
+##  $ steps   : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ date    : POSIXct, format: "2012-10-01" "2012-10-01" ...
+##  $ interval: int  0 5 10 15 20 25 30 35 40 45 ...
 ```
 
 ## What is mean total number of steps taken per day?
@@ -73,21 +70,7 @@ Using `group_by` we prepare the aggregation by `date`, afterwards we define a ne
 
 ```r
 dataxday<-group_by(data,date)
-```
-
-```
-## Error in eval(expr, envir, enclos): unknown column 'date'
-```
-
-```r
 dataxday<-summarize(dataxday,total=sum(steps))
-```
-
-```
-## Error in summarise_impl(.data, dots): object 'steps' not found
-```
-
-```r
 summary(dataxday)
 ```
 
@@ -130,21 +113,7 @@ Using `group_by` we prepare the aggregation by `date`, afterwards we define a ne
 
 ```r
 stepxint<-group_by(data,interval)
-```
-
-```
-## Error in eval(expr, envir, enclos): unknown column 'interval'
-```
-
-```r
 stepxint<-summarize(stepxint,avgstep=mean(steps,na.rm=TRUE))
-```
-
-```
-## Error in mean(steps, na.rm = TRUE): object 'steps' not found
-```
-
-```r
 library(ggplot2)
 g1<-qplot(interval,avgstep,data=stepxint,geom='path',main="Average Number of steps per interval",xlab='Interval',ylab='Number of steps')
 g1<-g1+scale_x_discrete(breaks=seq(0, 2400, by=100))
@@ -174,21 +143,11 @@ sum(is.na(data$date))
 ```
 
 ```
-## Warning in is.na(data$date): is.na() applied to non-(list or vector) of
-## type 'NULL'
-```
-
-```
 ## [1] 0
 ```
 
 ```r
 sum(is.na(data$interval))
-```
-
-```
-## Warning in is.na(data$interval): is.na() applied to non-(list or vector)
-## of type 'NULL'
 ```
 
 ```
@@ -200,7 +159,7 @@ sum(is.na(data$steps))
 ```
 
 ```
-## [1] 0
+## [1] 2304
 ```
 
 ```r
@@ -208,7 +167,7 @@ newdata<-data
 iddna<-which(is.na(newdata$steps))
 n<-length(iddna)
 ```
-It means we have **0** nrows with missing values in the `steps` variable. `iddna` is a vector with the row index in the `newdata` dataset about missing values.  
+It means we have **2304** nrows with missing values in the `steps` variable. `iddna` is a vector with the row index in the `newdata` dataset about missing values.  
 
 ### Devise a strategy for filling in all of the missing values in the dataset.
 The approach is to fill in missing number of steps value with the corresponding average per interval.
@@ -229,30 +188,13 @@ idint<-iddna[i]
 newdata$steps[idint]<-FUNFIL(newdata$interval[idint])
 }
 ```
-
-```
-## Error in `[<-.factor`(`*tmp*`, idint, value = numeric(0)): replacement has length zero
-```
 ### Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day.
 
 
 ```r
 ndataxday<-group_by(newdata,date)
-```
-
-```
-## Error in eval(expr, envir, enclos): unknown column 'date'
-```
-
-```r
 ndataxday<-summarize(ndataxday,total=sum(steps))
-```
 
-```
-## Error in summarise_impl(.data, dots): object 'steps' not found
-```
-
-```r
 # Total steps per day
 # Histogram
 hist(ndataxday$total,xlab='Total number of steps taken',main='Freguency of total number of steps x day')
@@ -285,19 +227,15 @@ Sys.setlocale("LC_TIME", "English") ## sorry my personal LOCALE is Italian
 
 ```r
 newdata<-mutate(newdata,wk=factor(weekdays(date) %in% c('Sunday','Saturday'), labels = c("weekday", "weekend")))
-```
-
-```
-## Error in UseMethod("weekdays"): no applicable method for 'weekdays' applied to an object of class "function"
-```
-
-```r
 str(newdata)
 ```
 
 ```
-## 'data.frame':	17568 obs. of  1 variable:
-##  $ steps..date...interval.: Factor w/ 17568 levels "0,\"2012-10-02\",0",..: 15265 15490 15266 15337 15400 15459 15462 15473 15476 15487 ...
+## 'data.frame':	17568 obs. of  4 variables:
+##  $ steps   : num  2 0 0 0 0 2 1 1 0 1 ...
+##  $ date    : POSIXct, format: "2012-10-01" "2012-10-01" ...
+##  $ interval: int  0 5 10 15 20 25 30 35 40 45 ...
+##  $ wk      : Factor w/ 2 levels "weekday","weekend": 1 1 1 1 1 1 1 1 1 1 ...
 ```
 
 ### Make a panel plot containing a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis).
@@ -305,21 +243,7 @@ str(newdata)
 
 ```r
 stepxwint<-group_by(newdata,wk,interval)
-```
-
-```
-## Error in eval(expr, envir, enclos): unknown column 'wk'
-```
-
-```r
 stepxwint<-summarize(stepxwint,avgstep=mean(steps))
-```
-
-```
-## Error in mean(steps): object 'steps' not found
-```
-
-```r
 g1<-qplot(interval,avgstep,data=stepxwint,geom='path',facets=wk~.,main="Average Number of steps per interval",xlab='Interval',ylab='Number of steps')
 g1<-g1+scale_x_discrete(breaks=seq(0, 2400, by=100))
 g1
