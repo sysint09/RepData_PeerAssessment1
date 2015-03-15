@@ -1,3 +1,4 @@
+
 # Premilinary analysis
 setwd('DataScience/GIT/RepData_PeerAssessment1')
 # Load data
