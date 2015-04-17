@@ -1,6 +1,8 @@
 
 # Premilinary analysis
+
 # setwd('DataScience/GIT/RepData_PeerAssessment1')
+#
 # Load data
 data<-read.csv('activity.csv')
 # Preprocessing data
