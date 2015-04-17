@@ -89,7 +89,7 @@ summary(dataxday)
 
 
 ```r
-hist(dataxday$total,xlab='Total number of steps taken',main='Freguency of total number of steps x day')
+hist(dataxday$total,xlab='Total number of steps taken',main='Freguency of total number of steps x day',col=c("red"))
 ```
 
 ![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
@@ -115,8 +115,8 @@ Using `group_by` we prepare the aggregation by `date`, afterwards we define a ne
 stepxint<-group_by(data,interval)
 stepxint<-summarize(stepxint,avgstep=mean(steps,na.rm=TRUE))
 library(ggplot2)
-g1<-qplot(interval,avgstep,data=stepxint,geom='path',main="Average Number of steps per interval",xlab='Interval',ylab='Number of steps')
-g1<-g1+scale_x_discrete(breaks=seq(0, 2400, by=100))
+g1<-qplot(interval,avgstep,data=stepxint,geom='path',main="Average Number of steps per interval",xlab='Interval',ylab='Number of steps',color=c("red"))
+g1<-g1+scale_x_discrete(breaks=seq(0, 2400, by=100))+theme_bw()
 g1
 ```
 
@@ -197,7 +197,7 @@ ndataxday<-summarize(ndataxday,total=sum(steps))
 
 # Total steps per day
 # Histogram
-hist(ndataxday$total,xlab='Total number of steps taken',main='Freguency of total number of steps x day')
+hist(ndataxday$total,xlab='Total number of steps taken',main='Freguency of total number of steps x day',col=c("green"))
 ```
 
 ![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11-1.png) 
@@ -245,7 +245,7 @@ str(newdata)
 stepxwint<-group_by(newdata,wk,interval)
 stepxwint<-summarize(stepxwint,avgstep=mean(steps))
 g1<-qplot(interval,avgstep,data=stepxwint,geom='path',facets=wk~.,main="Average Number of steps per interval",xlab='Interval',ylab='Number of steps')
-g1<-g1+scale_x_discrete(breaks=seq(0, 2400, by=100))
+g1<-g1+scale_x_discrete(breaks=seq(0, 2400, by=100))+theme_bw()
 g1
 ```
 
